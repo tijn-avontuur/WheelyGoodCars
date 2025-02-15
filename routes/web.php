@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/cars/create', function () {
+    return view('cars.create');
+})->name('cars.create');
+
 Route::middleware('auth')->group(function () {
     //
 });
