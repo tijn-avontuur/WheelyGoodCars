@@ -2,13 +2,16 @@
 
 @section('content')
 <div class="container">
-    <h2>Voeg een auto toe</h2>
+    <h2>Nieuw aanbod</h2>
+    
+    <p>Hier komt de kenteken API</p>
+
     <form action="{{ route('cars.store') }}" method="POST">
         @csrf
 
         <div class="mb-3">
-            <label for="merk" class="form-label">Merk:</label>
-            <input type="text" class="form-control" id="merk" name="merk" required>
+            <label for="brand" class="form-label">Merk:</label>
+            <input type="text" class="form-control" id="brand" name="brand" required>
         </div>
 
         <div class="mb-3">
@@ -17,43 +20,43 @@
         </div>
 
         <div class="mb-3">
-            <label for="zitplaatsen" class="form-label">Zitplaatsen:</label>
-            <input type="number" class="form-control" id="zitplaatsen" name="zitplaatsen" required>
+            <label for="seats" class="form-label">Zitplaatsen:</label>
+            <input type="number" class="form-control" id="seats" name="seats" required>
         </div>
 
         <div class="mb-3">
-            <label for="deuren" class="form-label">Aantal deuren:</label>
-            <input type="number" class="form-control" id="deuren" name="deuren" required>
+            <label for="doors" class="form-label">Aantal deuren:</label>
+            <input type="number" class="form-control" id="doors" name="doors" required>
         </div>
 
         <div class="mb-3">
-            <label for="massa" class="form-label">Massa rijklaar:</label>
-            <input type="number" class="form-control" id="massa" name="massa" required>
+            <label for="weight" class="form-label">Massa rijklaar:</label>
+            <input type="number" class="form-control" id="weight" name="weight" required>
         </div>
 
         <div class="mb-3">
-            <label for="jaar" class="form-label">Jaar van productie:</label>
-            <input type="number" class="form-control" id="jaar" name="jaar" required>
+            <label for="production_year" class="form-label">Jaar van productie:</label>
+            <input type="number" class="form-control" id="production_year" name="production_year" required>
         </div>
 
         <div class="mb-3">
-            <label for="kleur" class="form-label">Kleur:</label>
-            <input type="text" class="form-control" id="kleur" name="kleur" required>
+            <label for="color" class="form-label">Kleur:</label>
+            <input type="text" class="form-control" id="color" name="color" required>
         </div>
 
         <div class="mb-3">
-            <label for="kilometerafstand" class="form-label">Kilometerafstand:</label>
+            <label for="mileage" class="form-label">Kilometerstand:</label>
             <div class="input-group">
-                <input type="number" class="form-control" id="kilometerafstand" name="kilometerafstand" required>
+                <input type="number" class="form-control" id="mileage" name="mileage" required>
                 <span class="input-group-text">km</span>
             </div>
         </div>
 
         <div class="mb-3">
-            <label for="vraagprijs" class="form-label">Vraagprijs:</label>
+            <label for="price" class="form-label">Vraagprijs:</label>
             <div class="input-group">
                 <span class="input-group-text">€</span>
-                <input type="number" step="0.01" class="form-control" id="vraagprijs" name="vraagprijs" required>
+                <input type="number" step="0.01" class="form-control" id="price" name="price" required>
             </div>
         </div>
 

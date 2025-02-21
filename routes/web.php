@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CreateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/cars/create', function () {
-    return view('cars.create');
-})->name('cars.create');
+
+Route::get('/cars/create', [CreateController::class, 'create'])->name('cars.create');
+Route::post('/cars', [CreateController::class, 'store'])->name('cars.store');
+Route::get('/cars/{id}', [CreateController::class, 'show'])->name('cars.show');
 
 Route::middleware('auth')->group(function () {
     //
