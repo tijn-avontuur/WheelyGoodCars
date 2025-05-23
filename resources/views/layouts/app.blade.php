@@ -1,99 +1,42 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <h2>Nieuw aanbod</h2>
-    
-    <p>Hier komt de kenteken API</p>
-
-    <form action="{{ route('cars.store') }}" method="POST">
-        @csrf
-
-        <div class="mb-3">
-            <label for="license_plate" class="form-label">Kenteken:</label>
-            <input type="text" class="form-control" id="license_plate" name="license_plate" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="brand" class="form-label">Merk:</label>
-            <input type="text" class="form-control" id="brand" name="brand" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="model" class="form-label">Model:</label>
-            <input type="text" class="form-control" id="model" name="model" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="seats" class="form-label">Zitplaatsen:</label>
-            <input type="number" class="form-control" id="seats" name="seats" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="doors" class="form-label">Aantal deuren:</label>
-            <input type="number" class="form-control" id="doors" name="doors" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="weight" class="form-label">Massa rijklaar:</label>
-            <input type="number" class="form-control" id="weight" name="weight" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="production_year" class="form-label">Jaar van productie:</label>
-            <input type="number" class="form-control" id="production_year" name="production_year" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="color" class="form-label">Kleur:</label>
-            <input type="text" class="form-control" id="color" name="color" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="mileage" class="form-label">Kilometerstand:</label>
-            <div class="input-group">
-                <input type="number" class="form-control" id="mileage" name="mileage" required>
-                <span class="input-group-text">km</span>
+<!doctype html>
+<html lang="nl">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>WheelyGoodCars</title>
+        @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark d-print-none bg-black">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ route('home') }}"><strong class="text-primary">Wheely</strong> good cars<strong class="text-primary">!</strong></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link text-light" href="{{ route('cars.store') }}">Alle auto's</a></li>
+                            @auth
+                                <li class="nav-item"><a class="nav-link text-light" href="">Mijn aanbod</a></li>
+                                <li class="nav-item"><a class="nav-link text-light" href="{{ route('cars.create') }}">Aanbod plaatsen</a></li>
+                            @endauth
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @guest
+                            <li class="nav-item"><a class="nav-link text-secondary"   href="{{ route('register') }}">Registreren</a></li>
+                            <li class="nav-item"><a class="nav-link text-secondary" href="{{ route('login') }}">Inloggen</a></li>
+                        @endguest
+                        @auth
+                            <li class="nav-item"><a class="nav-link text-secondary"   href="{{ route('logout') }}">Uitloggen</a></li>
+                        @endauth
+                    </ul>
+                </div>
             </div>
+        </nav>
+
+        <div class="container">
+            @yield('content')
         </div>
-
-        <div class="mb-3">
-            <label for="price" class="form-label">Vraagprijs:</label>
-            <div class="input-group">
-                <span class="input-group-text">€</span>
-                <input type="number" step="0.01" class="form-control" id="price" name="price" required>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Aanbod afronden</button>
-    </form>
-</div>
-
-<script>
-document.getElementById('license_plate').addEventListener('input', function() {
-    let kenteken = this.value;
-    
-    // Voer een API-aanroep uit als het kenteken niet leeg is en minimaal 6 tekens heeft
-    if (kenteken.length === 6) {
-        fetch(`/api/rdw?kenteken=${kenteken}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    // Vul de velden met de gegevens van de API
-                    document.getElementById('brand').value = data.brand || '';
-                    document.getElementById('model').value = data.model || '';
-                    document.getElementById('seats').value = data.seats || '';
-                    document.getElementById('doors').value = data.doors || '';
-                    document.getElementById('weight').value = data.weight || '';
-                    document.getElementById('production_year').value = data.production_year || '';
-                    document.getElementById('color').value = data.color || '';
-                    document.getElementById('mileage').value = data.mileage || '';
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-});
-</script>
-@endsection
+    </body>
+</html>
