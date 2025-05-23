@@ -10,6 +10,11 @@
         @csrf
 
         <div class="mb-3">
+            <label for="license_plate" class="form-label">Kenteken:</label>
+            <input type="text" class="form-control" id="license_plate" name="license_plate" required>
+        </div>
+
+        <div class="mb-3">
             <label for="brand" class="form-label">Merk:</label>
             <input type="text" class="form-control" id="brand" name="brand" required>
         </div>
@@ -63,4 +68,32 @@
         <button type="submit" class="btn btn-primary">Aanbod afronden</button>
     </form>
 </div>
+
+<script>
+document.getElementById('license_plate').addEventListener('input', function() {
+    let kenteken = this.value;
+    
+    // Voer een API-aanroep uit als het kenteken niet leeg is en minimaal 6 tekens heeft
+    if (kenteken.length === 6) {
+        fetch(`/api/rdw?kenteken=${kenteken}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Vul de velden met de gegevens van de API
+                    document.getElementById('brand').value = data.brand || '';
+                    document.getElementById('model').value = data.model || '';
+                    document.getElementById('seats').value = data.seats || '';
+                    document.getElementById('doors').value = data.doors || '';
+                    document.getElementById('weight').value = data.weight || '';
+                    document.getElementById('production_year').value = data.production_year || '';
+                    document.getElementById('color').value = data.color || '';
+                    document.getElementById('mileage').value = data.mileage || '';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+});
+</script>
 @endsection
