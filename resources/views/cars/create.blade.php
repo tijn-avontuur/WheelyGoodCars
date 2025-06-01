@@ -6,7 +6,7 @@
     
     <p>Hier komt de kenteken API</p>
 
-    <form action="{{ route('cars.store') }}" method="POST">
+    <form action="{{ route('cars.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="mb-3">
@@ -58,6 +58,11 @@
                 <span class="input-group-text">€</span>
                 <input type="number" step="0.01" class="form-control" id="price" name="price" required>
             </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="photo" class="form-label">Foto van de auto:</label>
+            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
         </div>
 
         <div class="mb-3">

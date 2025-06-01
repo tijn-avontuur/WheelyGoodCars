@@ -47,6 +47,7 @@ class CreateController extends Controller
             'color' => 'required|string|max:255',
             'mileage' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'photo' => 'nullable|image|max:2048',
         ]);
 
         $car = new Car();
@@ -61,6 +62,12 @@ class CreateController extends Controller
         $car->mileage = $validated['mileage'];
         $car->price = $validated['price'];
         $car->license_plate = 'TBD'; // Placeholder for license plate
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('car_photos', 'public');
+            $car->image = $path; // <-- gebruik 'image' i.p.v. 'photo'
+        }
+
         $car->save();
 
         if ($request->has('tags')) {
@@ -134,12 +141,22 @@ class CreateController extends Controller
     public function destroy($id)
     {
         $car = Car::findOrFail($id);
-        // Ensure the user owns the car
+
+        // Controleer of de ingelogde gebruiker de eigenaar is
         if ($car->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
+
+        // Verwijder gekoppelde tags
+        $car->tags()->detach();
+
+        // Verwijder de afbeelding uit storage (optioneel)
+        if ($car->image) {
+            \Storage::disk('public')->delete($car->image);
+        }
+
         $car->delete();
 
-        return redirect()->route('cars.index')->with('success', 'Auto succesvol verwijderd!');
+        return redirect()->route('cars.mine')->with('success', 'Auto succesvol verwijderd!');
     }
 }

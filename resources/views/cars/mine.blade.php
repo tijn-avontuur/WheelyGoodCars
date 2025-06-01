@@ -16,6 +16,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>Foto</th>
                     <th>Merk</th>
                     <th>Model</th>
                     <th>Kenteken</th>
@@ -33,6 +34,13 @@
             <tbody>
                 @foreach ($cars as $car)
                     <tr>
+                        <td>
+                            @if($car->image)
+                                <img src="{{ asset('storage/' . $car->image) }}" alt="Foto" style="max-width: 60px; max-height: 40px; object-fit: cover;">
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td>{{ $car->brand }}</td>
                         <td>{{ $car->model }}</td>
                         <td>{{ $car->license_plate }}</td>

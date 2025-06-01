@@ -4,6 +4,10 @@
 <div class="container">
     <h2>Auto details</h2>
     
+    @if($car->image)
+        <img src="{{ asset('storage/' . $car->image) }}" alt="Foto van {{ $car->brand }} {{ $car->model }}" class="img-fluid mb-3" style="max-width:300px;">
+    @endif
+
     <ul>
         <li><strong>Merk:</strong> {{ $car->brand }}</li>
         <li><strong>Model:</strong> {{ $car->model }}</li>
