@@ -1,0 +1,62 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h2>Alle auto's</h2>
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($cars->isEmpty())
+        <p>Geen auto's beschikbaar.</p>
+    @else
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Merk</th>
+                    <th>Model</th>
+                    <th>Kenteken</th>
+                    <th>Zitplaatsen</th>
+                    <th>Deuren</th>
+                    <th>Gewicht</th>
+                    <th>Bouwjaar</th>
+                    <th>Kleur</th>
+                    <th>Kilometerstand</th>
+                    <th>Prijs</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($cars as $car)
+                    <tr>
+                        <td>{{ $car->brand }}</td>
+                        <td>{{ $car->model }}</td>
+                        <td>{{ $car->license_plate }}</td>
+                        <td>{{ $car->seats }}</td>
+                        <td>{{ $car->doors }}</td>
+                        <td>{{ $car->weight }} kg</td>
+                        <td>{{ $car->production_year }}</td>
+                        <td>{{ $car->color }}</td>
+                        <td>{{ $car->mileage }} km</td>
+                        <td>€{{ number_format($car->price, 2) }}</td>
+                        <td>
+                            <a href="{{ route('cars.show', $car->id) }}" class="btn btn-info btn-sm">Bekijk</a>
+                            @if (Auth::id() === $car->user_id)
+                                <a href="{{ route('cars.edit', $car->id) }}" class="btn btn-warning btn-sm">Bewerk</a>
+                                <form action="{{ route('cars.destroy', $car->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Weet je zeker dat je deze auto wilt verwijderen?')">Verwijder</button>
+                                </form>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
+@endsection

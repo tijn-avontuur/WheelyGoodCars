@@ -8,25 +8,32 @@ use Illuminate\Support\Facades\Auth;
 
 class CreateController extends Controller
 {
-    // Laat het formulier zien
+    // Show all cars (index for store.blade.php)
+    public function index()
+    {
+        $cars = Car::all();
+        return view('cars.store', compact('cars'));
+    }
+
+    // Show the form for creating a new car
     public function create()
     {
         return view('cars.create');
     }
 
-    // Sla de auto op in de database
+    // Store a newly created car in the database
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'brand' => 'required|string',
-            'model' => 'required|string',
-            'seats' => 'required|integer',
-            'doors' => 'required|integer',
-            'weight' => 'required|integer',
-            'production_year' => 'required|integer',
-            'color' => 'required|string',
-            'mileage' => 'required|integer',
-            'price' => 'required|numeric',
+            'brand' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'seats' => 'required|integer|min:1',
+            'doors' => 'required|integer|min:1',
+            'weight' => 'required|integer|min:0',
+            'production_year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'color' => 'required|string|max:255',
+            'mileage' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
         ]);
 
         $car = new Car();
@@ -40,16 +47,74 @@ class CreateController extends Controller
         $car->color = $validated['color'];
         $car->mileage = $validated['mileage'];
         $car->price = $validated['price'];
-        $car->license_plate = 'TBD'; // Placeholder voor kenteken
+        $car->license_plate = 'TBD'; // Placeholder for license plate
         $car->save();
 
-        return redirect()->route('cars.show', $car->id);
+        return redirect()->route('cars.index')->with('success', 'Auto succesvol toegevoegd!');
     }
 
-    // Toon de details van een auto
+    // Show the details of a specific car
     public function show($id)
     {
         $car = Car::findOrFail($id);
         return view('cars.show', compact('car'));
+    }
+    // Show cars owned by the logged-in user
+    public function mine()
+    {
+        $userId = Auth::id();
+        $cars = Car::where('user_id', $userId)->get();
+
+        return view('cars.mine', compact('cars'));
+    }
+
+    // Show the form for editing a car
+    public function edit($id)
+    {
+        $car = Car::findOrFail($id);
+        // Ensure the user owns the car
+        if ($car->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        return view('cars.edit', compact('car'));
+    }
+
+    // Update the car in the database
+    public function update(Request $request, $id)
+    {
+        $car = Car::findOrFail($id);
+        // Ensure the user owns the car
+        if ($car->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'brand' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'seats' => 'required|integer|min:1',
+            'doors' => 'required|integer|min:1',
+            'weight' => 'required|integer|min:0',
+            'production_year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'color' => 'required|string|max:255',
+            'mileage' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $car->update($validated);
+
+        return redirect()->route('cars.index')->with('success', 'Auto succesvol bijgewerkt!');
+    }
+
+    // Delete a car
+    public function destroy($id)
+    {
+        $car = Car::findOrFail($id);
+        // Ensure the user owns the car
+        if ($car->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        $car->delete();
+
+        return redirect()->route('cars.index')->with('success', 'Auto succesvol verwijderd!');
     }
 }

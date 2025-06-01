@@ -15,20 +15,19 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link text-light" href="{{ route('cars.store') }}">Alle auto's</a></li>
-                            @auth
-                                <li class="nav-item"><a class="nav-link text-light" href="">Mijn aanbod</a></li>
-                                <li class="nav-item"><a class="nav-link text-light" href="{{ route('cars.create') }}">Aanbod plaatsen</a></li>
-                            @endauth
-                        </li>
+                        <li class="nav-item"><a class="nav-link text-light" href="{{ route('cars.index') }}">Alle auto's</a></li>
+                        @auth
+                            <li class="nav-item"><a class="nav-link text-light" href="{{ route('cars.mine') }}">Mijn aanbod</a></li>
+                            <li class="nav-item"><a class="nav-link text-light" href="{{ route('cars.create') }}">Aanbod plaatsen</a></li>
+                        @endauth
                     </ul>
                     <ul class="navbar-nav">
                         @guest
-                            <li class="nav-item"><a class="nav-link text-secondary"   href="{{ route('register') }}">Registreren</a></li>
+                            <li class="nav-item"><a class="nav-link text-secondary" href="{{ route('register') }}">Registreren</a></li>
                             <li class="nav-item"><a class="nav-link text-secondary" href="{{ route('login') }}">Inloggen</a></li>
                         @endguest
                         @auth
-                            <li class="nav-item"><a class="nav-link text-secondary"   href="{{ route('logout') }}">Uitloggen</a></li>
+                            <li class="nav-item"><a class="nav-link text-secondary" href="{{ route('logout') }}">Uitloggen</a></li>
                         @endauth
                     </ul>
                 </div>
