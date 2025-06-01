@@ -5,20 +5,33 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Car;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Tag;
 
 class CreateController extends Controller
 {
     // Show all cars (index for store.blade.php)
-    public function index()
+    public function index(Request $request)
     {
-        $cars = Car::all();
-        return view('cars.store', compact('cars'));
+        $tags = \App\Models\Tag::all();
+
+        $cars = Car::query();
+
+        if ($request->has('tags')) {
+            $cars->whereHas('tags', function ($query) use ($request) {
+                $query->whereIn('tags.id', $request->input('tags'));
+            });
+        }
+
+        $cars = $cars->get();
+
+        return view('cars.store', compact('cars', 'tags'));
     }
 
     // Show the form for creating a new car
     public function create()
     {
-        return view('cars.create');
+        $tags = Tag::all();
+        return view('cars.create', compact('tags'));
     }
 
     // Store a newly created car in the database
@@ -50,6 +63,10 @@ class CreateController extends Controller
         $car->license_plate = 'TBD'; // Placeholder for license plate
         $car->save();
 
+        if ($request->has('tags')) {
+            $car->tags()->sync($request->input('tags'));
+        }
+
         return redirect()->route('cars.index')->with('success', 'Auto succesvol toegevoegd!');
     }
 
@@ -59,6 +76,7 @@ class CreateController extends Controller
         $car = Car::findOrFail($id);
         return view('cars.show', compact('car'));
     }
+
     // Show cars owned by the logged-in user
     public function mine()
     {
@@ -76,7 +94,8 @@ class CreateController extends Controller
         if ($car->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
-        return view('cars.edit', compact('car'));
+        $tags = \App\Models\Tag::all();
+        return view('cars.edit', compact('car', 'tags')); // <-- voeg 'tags' toe
     }
 
     // Update the car in the database
@@ -101,6 +120,12 @@ class CreateController extends Controller
         ]);
 
         $car->update($validated);
+
+        if ($request->has('tags')) {
+            $car->tags()->sync($request->input('tags'));
+        } else {
+            $car->tags()->sync([]);
+        }
 
         return redirect()->route('cars.index')->with('success', 'Auto succesvol bijgewerkt!');
     }

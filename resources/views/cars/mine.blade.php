@@ -25,6 +25,7 @@
                     <th>Bouwjaar</th>
                     <th>Kleur</th>
                     <th>Kilometerstand</th>
+                    <th>Tags</th>
                     <th>Prijs</th>
                     <th>Acties</th>
                 </tr>
@@ -41,6 +42,13 @@
                         <td>{{ $car->production_year }}</td>
                         <td>{{ $car->color }}</td>
                         <td>{{ $car->mileage }} km</td>
+                        <td>
+                            @forelse($car->tags as $tag)
+                                <span class="badge" style="background-color: {{ $tag->color }}">{{ $tag->name }}</span>
+                            @empty
+                                <span class="text-muted">Geen tags</span>
+                            @endforelse
+                        </td>
                         <td>€{{ number_format($car->price, 2) }}</td>
                         <td>
                             <a href="{{ route('cars.show', $car->id) }}" class="btn btn-info btn-sm">Bekijk</a>

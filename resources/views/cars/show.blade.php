@@ -17,6 +17,15 @@
         <li><strong>Vraagprijs:</strong> €{{ number_format($car->price, 2) }}</li>
     </ul>
 
+    <div class="mb-3">
+        <strong>Tags:</strong>
+        @forelse($car->tags as $tag)
+            <span class="badge" style="background-color: {{ $tag->color }}">{{ $tag->name }}</span>
+        @empty
+            <span class="text-muted">Geen tags</span>
+        @endforelse
+    </div>
+
     @if (Auth::id() === $car->user_id)
         <a href="{{ route('cars.edit', $car->id) }}" class="btn btn-warning btn-sm">Bewerk</a>
         <form action="{{ route('cars.destroy', $car->id) }}" method="POST" style="display:inline;">

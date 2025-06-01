@@ -60,6 +60,21 @@
             </div>
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Tags:</label>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach($tags as $tag)
+                    <div class="form-check" style="min-width: 150px;">
+                        <input class="form-check-input" type="checkbox" name="tags[]" id="tag{{ $tag->id }}" value="{{ $tag->id }}">
+                        <label class="form-check-label" for="tag{{ $tag->id }}" style="color: {{ $tag->color }}">
+                            {{ $tag->name }}
+                        </label>
+                    </div>
+                @endforeach
+            </div>
+            <small class="form-text text-muted">Selecteer één of meerdere tags.</small>
+        </div>
+
         <button type="submit" class="btn btn-primary">Aanbod afronden</button>
     </form>
 </div>

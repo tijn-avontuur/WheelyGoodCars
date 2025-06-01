@@ -13,6 +13,26 @@
     @if ($cars->isEmpty())
         <p>Geen auto's beschikbaar.</p>
     @else
+        <form method="GET" action="{{ route('cars.index') }}" class="mb-4">
+            <button class="btn btn-outline-primary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#filterTagsCollapse" aria-expanded="false" aria-controls="filterTagsCollapse">
+                Filter op tags
+            </button>
+            <div class="collapse" id="filterTagsCollapse">
+                <div class="card card-body mb-2">
+                    @foreach($tags as $tag)
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="tags[]" id="filter_tag{{ $tag->id }}" value="{{ $tag->id }}"
+                                @if(request()->has('tags') && in_array($tag->id, request('tags', []))) checked @endif>
+                            <label class="form-check-label" for="filter_tag{{ $tag->id }}" style="color: {{ $tag->color }}">
+                                {{ $tag->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </form>
+
         <table class="table">
             <thead>
                 <tr>
@@ -25,6 +45,7 @@
                     <th>Bouwjaar</th>
                     <th>Kleur</th>
                     <th>Kilometerstand</th>
+                    <th>Tags</th>
                     <th>Prijs</th>
                     <th>Acties</th>
                 </tr>
@@ -41,6 +62,13 @@
                         <td>{{ $car->production_year }}</td>
                         <td>{{ $car->color }}</td>
                         <td>{{ $car->mileage }} km</td>
+                        <td>
+                            @forelse($car->tags as $tag)
+                                <span class="badge" style="background-color: {{ $tag->color }}">{{ $tag->name }}</span>
+                            @empty
+                                <span class="text-muted">Geen tags</span>
+                            @endforelse
+                        </td>
                         <td>€{{ number_format($car->price, 2) }}</td>
                         <td>
                             <a href="{{ route('cars.show', $car->id) }}" class="btn btn-info btn-sm">Bekijk</a>
