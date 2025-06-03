@@ -40,5 +40,33 @@
     @endif
 
     <a href="{{ route('cars.index') }}" class="btn btn-secondary btn-sm">Terug naar alle auto's</a>
+
+    <!-- Bootstrap Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="viewToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header">
+                <strong class="me-auto">Notificatie</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Vandaag keken 10 klanten deze {{ $car->brand }} {{ $car->model }} <br> @if($car->image)
+                <img src="{{ asset('storage/' . $car->image) }}" alt="Foto van {{ $car->brand }} {{ $car->model }}" class="img-fluid mb-3" style="max-width:300px;">
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script>
+        // Wait 10 seconds after page load to show the toast
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                var toastElement = document.getElementById('viewToast');
+                var toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            }, 10000); // 10 seconds delay
+        });
+    </script>
 @endsection

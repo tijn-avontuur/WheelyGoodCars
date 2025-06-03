@@ -41,5 +41,9 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
         
         @livewireScripts
+        <script src="{{ asset('js/app.js') }}"></script>
+        @yield('scripts')
+
+        
     </body>
 </html>
