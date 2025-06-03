@@ -10,6 +10,8 @@
         </div>
     @endif
 
+    @livewire('search-cars')
+
     @if ($cars->isEmpty())
         <p>Geen auto's beschikbaar.</p>
     @else
