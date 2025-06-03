@@ -17,18 +17,12 @@
             <thead>
                 <tr>
                     <th>Foto</th>
+                    <th>Kenteken</th>
+                    <th>Status</th>
+                    <th>Prijs</th>
                     <th>Merk</th>
                     <th>Model</th>
-                    <th>Kenteken</th>
-                    <th>Zitplaatsen</th>
-                    <th>Deuren</th>
-                    <th>Gewicht</th>
-                    <th>Bouwjaar</th>
-                    <th>Kleur</th>
-                    <th>Kilometerstand</th>
                     <th>Tags</th>
-                    <th>Prijs</th>
-                    <th>Status</th>
                     <th>Acties</th>
                 </tr>
             </thead>
@@ -37,20 +31,16 @@
                     <tr>
                         <td>
                             @if($car->image)
-                                <img src="{{ asset('storage/' . $car->image) }}" alt="Foto" style="max-width: 60px; max-height: 40px; object-fit: cover;">
+                                <img src="{{ asset('storage/' . $car->image) }}" alt="Foto" style="max-width: 100px; max-height: 100px; object-fit: cover;">
                             @else
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
+                        <td>{{ $car->license_plate }}</td>
+                        <td>{{ $car->status === 'available' ? 'Beschikbaar' : 'Verkocht' }}</td>
+                        <td>€{{ number_format($car->price, 2) }}</td>
                         <td>{{ $car->brand }}</td>
                         <td>{{ $car->model }}</td>
-                        <td>{{ $car->license_plate }}</td>
-                        <td>{{ $car->seats }}</td>
-                        <td>{{ $car->doors }}</td>
-                        <td>{{ $car->weight }} kg</td>
-                        <td>{{ $car->production_year }}</td>
-                        <td>{{ $car->color }}</td>
-                        <td>{{ $car->mileage }} km</td>
                         <td>
                             @forelse($car->tags as $tag)
                                 <span class="badge" style="background-color: {{ $tag->color }}">{{ $tag->name }}</span>
@@ -58,8 +48,6 @@
                                 <span class="text-muted">Geen tags</span>
                             @endforelse
                         </td>
-                        <td>€{{ number_format($car->price, 2) }}</td>
-                        <td>{{ $car->status === 'available' ? 'Beschikbaar' : 'Verkocht' }}</td>
                         <td>
                             <a href="{{ route('cars.show', $car->id) }}" class="btn btn-info btn-sm">Bekijk</a>
                             <a href="{{ route('cars.edit', $car->id) }}" class="btn btn-warning btn-sm">Bewerk</a>
@@ -68,7 +56,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Weet je zeker dat je deze auto wilt verwijderen?')">Verwijder</button>
                             </form>
-                            @livewire('car-status', ['carId' => $car->id])
+                            
                         </td>
                     </tr>
                 @endforeach
