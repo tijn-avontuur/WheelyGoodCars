@@ -28,6 +28,7 @@
                     <th>Kilometerstand</th>
                     <th>Tags</th>
                     <th>Prijs</th>
+                    <th>Status</th>
                     <th>Acties</th>
                 </tr>
             </thead>
@@ -58,6 +59,7 @@
                             @endforelse
                         </td>
                         <td>€{{ number_format($car->price, 2) }}</td>
+                        <td>{{ $car->status === 'available' ? 'Beschikbaar' : 'Verkocht' }}</td>
                         <td>
                             <a href="{{ route('cars.show', $car->id) }}" class="btn btn-info btn-sm">Bekijk</a>
                             <a href="{{ route('cars.edit', $car->id) }}" class="btn btn-warning btn-sm">Bewerk</a>
@@ -66,6 +68,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Weet je zeker dat je deze auto wilt verwijderen?')">Verwijder</button>
                             </form>
+                            @livewire('car-status', ['carId' => $car->id])
                         </td>
                     </tr>
                 @endforeach

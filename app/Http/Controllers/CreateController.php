@@ -14,7 +14,7 @@ class CreateController extends Controller
     {
         $tags = \App\Models\Tag::all();
 
-        $cars = Car::query();
+        $cars = Car::query()->where('status', 'available'); // Only show available cars
 
         if ($request->has('tags')) {
             $cars->whereHas('tags', function ($query) use ($request) {
@@ -61,11 +61,12 @@ class CreateController extends Controller
         $car->color = $validated['color'];
         $car->mileage = $validated['mileage'];
         $car->price = $validated['price'];
-        $car->license_plate = 'TBD'; // Placeholder for license plate
+        $car->license_plate = 'TBD';
+        $car->status = 'available'; // Default status
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('car_photos', 'public');
-            $car->image = $path; // <-- gebruik 'image' i.p.v. 'photo'
+            $car->image = $path;
         }
 
         $car->save();
@@ -97,19 +98,17 @@ class CreateController extends Controller
     public function edit($id)
     {
         $car = Car::findOrFail($id);
-        // Ensure the user owns the car
         if ($car->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
         $tags = \App\Models\Tag::all();
-        return view('cars.edit', compact('car', 'tags')); // <-- voeg 'tags' toe
+        return view('cars.edit', compact('car', 'tags'));
     }
 
     // Update the car in the database
     public function update(Request $request, $id)
     {
         $car = Car::findOrFail($id);
-        // Ensure the user owns the car
         if ($car->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -124,6 +123,7 @@ class CreateController extends Controller
             'color' => 'required|string|max:255',
             'mileage' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'status' => 'required|in:available,sold', // Add status validation
         ]);
 
         $car->update($validated);
@@ -141,16 +141,11 @@ class CreateController extends Controller
     public function destroy($id)
     {
         $car = Car::findOrFail($id);
-
-        // Controleer of de ingelogde gebruiker de eigenaar is
         if ($car->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        // Verwijder gekoppelde tags
         $car->tags()->detach();
-
-        // Verwijder de afbeelding uit storage (optioneel)
         if ($car->image) {
             \Storage::disk('public')->delete($car->image);
         }

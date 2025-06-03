@@ -60,6 +60,14 @@
         </div>
 
         <div class="mb-3">
+            <label for="status" class="form-label">Status:</label>
+            <select class="form-control" id="status" name="status" required>
+                <option value="available" {{ old('status', $car->status) === 'available' ? 'selected' : '' }}>Beschikbaar</option>
+                <option value="sold" {{ old('status', $car->status) === 'sold' ? 'selected' : '' }}>Verkocht</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Tags:</label>
             <div class="d-flex flex-wrap gap-2">
                 @foreach($tags as $tag)
