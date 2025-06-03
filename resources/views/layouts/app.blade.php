@@ -22,6 +22,13 @@
                         @endauth
                     </ul>
                     <ul class="navbar-nav">
+                        @auth
+                            @if(auth()->user()->role === 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+                                </li>
+                            @endif
+                        @endauth
                         @guest
                             <li class="nav-item"><a class="nav-link text-secondary" href="{{ route('register') }}">Registreren</a></li>
                             <li class="nav-item"><a class="nav-link text-secondary" href="{{ route('login') }}">Inloggen</a></li>

@@ -19,9 +19,16 @@ class UserSeeder extends Seeder
             'name' => 'TestUser1',
             'email' => 'testuser1@example.com',
             'password' => '$2y$12$x6rtAKZw4lt9Tis4u8qrJe55GUVTq6TS25s2SdeRlgUOzBOoNg1MC',
+            'role' => 'admin',
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'TestUser2',
+            'email' => 'testuser2@example.com',
+            'password' => '$2y$12$x6rtAKZw4lt9Tis4u8qrJe55GUVTq6TS25s2SdeRlgUOzBOoNg1MC',
         ]);
 
         // 149 nepgebruikers
-        User::factory()->count(149)->create();
+        User::factory()->count(150)->create();
     }
 }

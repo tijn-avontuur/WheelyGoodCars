@@ -13,18 +13,34 @@ class CreateController extends Controller
     public function index(Request $request)
     {
         $tags = \App\Models\Tag::all();
+        $cars = \App\Models\Car::query()->where('status', 'available');
 
-        $cars = Car::query()->where('status', 'available'); // Only show available cars
-
-        if ($request->has('tags')) {
-            $cars->whereHas('tags', function ($query) use ($request) {
-                $query->whereIn('tags.id', $request->input('tags'));
+        // Zoekfilter
+        if ($request->filled('search')) {
+            $search = '%' . $request->input('search') . '%';
+            $cars->where(function ($query) use ($search) {
+                $query->where('brand', 'like', $search)
+                    ->orWhere('model', 'like', $search);
             });
         }
 
-        $cars = $cars->get();
+        // Tagfilter
+        if ($request->has('tags')) {
+            foreach ($request->input('tags') as $tagId) {
+                $cars->whereHas('tags', function ($query) use ($tagId) {
+                    $query->where('tags.id', $tagId);
+                });
+            }
+        }
 
-        return view('cars.store', compact('cars', 'tags'));
+        $perPage = $request->input('per_page', 20);
+        if ($perPage === 'all') {
+            $perPage = 10000;
+        }
+
+        $cars = $cars->with('tags')->orderByDesc('created_at')->paginate((int)$perPage)->withQueryString();
+
+        return view('cars.store', compact('cars', 'tags', 'perPage'));
     }
 
     // Show the form for creating a new car

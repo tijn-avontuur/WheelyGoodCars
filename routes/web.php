@@ -29,6 +29,7 @@ Route::get('/cars/{id}/edit', [CreateController::class, 'edit'])->name('cars.edi
 Route::put('/cars/{id}', [CreateController::class, 'update'])->name('cars.update');
 Route::delete('/cars/{id}', [CreateController::class, 'destroy'])->name('cars.destroy');
 
+Route::get('/admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');
 
 Route::get('/rdw', [RDWController::class, 'search']);
 
