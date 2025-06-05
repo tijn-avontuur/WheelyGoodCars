@@ -4,9 +4,41 @@
 <div class="container">
     <h2>Auto bewerken</h2>
 
-    <form action="{{ route('cars.update', $car->id) }}" method="POST">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('cars.update', $car->id) }}" method="POST" id="editCarForm">
         @csrf
         @method('PUT')
+
+        <div class="mb-3">
+            <label for="license_plate" class="form-label">Kenteken:</label>
+            <div class="license-plate-wrapper">
+                <span class="license-plate-nl">NL</span>
+                <input type="text"
+                    class="form-control license-plate-input @error('license_plate') is-invalid @enderror"
+                    id="license_plate"
+                    name="license_plate"
+                    value="{{ old('license_plate', $car->license_plate) }}"
+                    placeholder="vul uw kenteken in"
+                    required maxlength="8"
+                    style="text-transform:uppercase"
+                    autocomplete="off">
+            </div>
+            @error('license_plate')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            <small class="form-text text-muted">Vul het kenteken in om auto-informatie automatisch te laden (gebruik geen streepjes). Dit kan even duren.</small>
+            <div id="rdw-loading" class="form-text text-info" style="display:none;">RDW gegevens ophalen...</div>
+            <div id="rdw-error" class="form-text text-danger" style="display:none;"></div>
+        </div>
 
         <div class="mb-3">
             <label for="brand" class="form-label">Merk:</label>
@@ -62,8 +94,8 @@
         <div class="mb-3">
             <label for="status" class="form-label">Status:</label>
             <select class="form-control" id="status" name="status" required>
-                <option value="available" {{ old('status', $car->status) === 'available' ? 'selected' : '' }}>Beschikbaar</option>
-                <option value="sold" {{ old('status', $car->status) === 'sold' ? 'selected' : '' }}>Verkocht</option>
+                <option value="available" {{ old('status', $car->status) == 'available' ? 'selected' : '' }}>Beschikbaar</option>
+                <option value="sold" {{ old('status', $car->status) == 'sold' ? 'selected' : '' }}>Verkocht</option>
             </select>
         </div>
 
@@ -88,4 +120,44 @@
         <a href="{{ route('cars.index') }}" class="btn btn-secondary">Annuleren</a>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+function fetchRdwData(plate) {
+    document.getElementById('rdw-loading').style.display = 'block';
+    document.getElementById('rdw-error').style.display = 'none';
+
+    fetch('/rdw/' + plate)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('rdw-loading').style.display = 'none';
+            if (data.error) {
+                document.getElementById('rdw-error').textContent = data.error;
+                document.getElementById('rdw-error').style.display = 'block';
+            } else {
+                if(data.brand) document.getElementById('brand').value = data.brand;
+                if(data.model) document.getElementById('model').value = data.model;
+                if(data.seats) document.getElementById('seats').value = data.seats;
+                if(data.doors) document.getElementById('doors').value = data.doors;
+                if(data.weight) document.getElementById('weight').value = data.weight;
+                if(data.production_year) document.getElementById('production_year').value = data.production_year;
+                if(data.color) document.getElementById('color').value = data.color;
+            }
+        })
+        .catch(() => {
+            document.getElementById('rdw-loading').style.display = 'none';
+            document.getElementById('rdw-error').textContent = 'Kon RDW gegevens niet ophalen.';
+            document.getElementById('rdw-error').style.display = 'block';
+        });
+}
+
+// Automatisch RDW ophalen als kenteken wijzigt
+document.getElementById('license_plate').addEventListener('change', function() {
+    const plate = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    if(plate.length >= 5) {
+        fetchRdwData(plate);
+    }
+});
+</script>
 @endsection

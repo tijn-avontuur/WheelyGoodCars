@@ -42,4 +42,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // Relatie: een gebruiker heeft meerdere auto's
+    public function cars()
+    {
+        return $this->hasMany(\App\Models\Car::class);
+    }
 }
