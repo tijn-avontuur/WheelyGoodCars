@@ -20,15 +20,23 @@ class CarSeeder extends Seeder
             'car_photos/car5.jpg',
         ];
 
-        // Seed 250 random cars
         Car::factory(250)->create()->each(function ($car) use ($tags, $images) {
-            // Kenteken zonder streepjes
             $car->license_plate = str_replace('-', '', $car->license_plate);
 
-            // Merk, model en kleur altijd hoofdletters
             $car->brand = strtoupper($car->brand);
             $car->model = strtoupper($car->model);
             $car->color = strtoupper($car->color);
+
+            $rand = rand(1, 100);
+            if ($rand <= 40) {
+                $car->views = 0;
+            } elseif ($rand <= 80) {
+                $car->views = rand(1, 5);
+            } elseif ($rand <= 95) {
+                $car->views = rand(6, 99);
+            } else {
+                $car->views = rand(100, 250);
+            }
 
             $randomTags = collect($tags)->shuffle()->take(rand(0, 3))->toArray();
             $car->tags()->sync($randomTags);

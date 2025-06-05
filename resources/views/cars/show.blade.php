@@ -21,6 +21,8 @@
         <li><strong>Vraagprijs:</strong> €{{ number_format($car->price, 2) }}</li>
     </ul>
 
+    <p class="text-muted mb-2">Aantal keer bekeken: <strong>{{ $car->views }}</strong></p>
+
     <div class="mb-3">
         <strong>Tags:</strong>
         @forelse($car->tags as $tag)

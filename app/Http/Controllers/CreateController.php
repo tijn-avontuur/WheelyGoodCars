@@ -93,6 +93,7 @@ class CreateController extends Controller
     public function show($id)
     {
         $car = Car::findOrFail($id);
+        $car->increment('views');
         return view('cars.show', compact('car'));
     }
 
