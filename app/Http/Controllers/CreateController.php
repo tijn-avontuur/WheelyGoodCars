@@ -9,13 +9,11 @@ use App\Models\Tag;
 
 class CreateController extends Controller
 {
-    // Show all cars (index for store.blade.php)
     public function index(Request $request)
     {
         $tags = \App\Models\Tag::all();
         $cars = \App\Models\Car::query()->where('status', 'available');
 
-        // Zoekfilter
         if ($request->filled('search')) {
             $search = '%' . $request->input('search') . '%';
             $cars->where(function ($query) use ($search) {
@@ -24,7 +22,6 @@ class CreateController extends Controller
             });
         }
 
-        // Tagfilter
         if ($request->has('tags')) {
             foreach ($request->input('tags') as $tagId) {
                 $cars->whereHas('tags', function ($query) use ($tagId) {
@@ -43,14 +40,12 @@ class CreateController extends Controller
         return view('cars.store', compact('cars', 'tags', 'perPage'));
     }
 
-    // Show the form for creating a new car
     public function create()
     {
         $tags = Tag::all();
         return view('cars.create', compact('tags'));
     }
 
-    // Store a newly created car in the database
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -63,6 +58,7 @@ class CreateController extends Controller
             'color' => 'required|string|max:255',
             'mileage' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'license_plate' => 'required|string|regex:/^[A-Z0-9]{1,8}$/',
             'photo' => 'nullable|image|max:2048',
         ]);
 
@@ -77,8 +73,8 @@ class CreateController extends Controller
         $car->color = $validated['color'];
         $car->mileage = $validated['mileage'];
         $car->price = $validated['price'];
-        $car->license_plate = 'TBD';
-        $car->status = 'available'; // Default status
+        $car->license_plate = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $validated['license_plate']));
+        $car->status = 'available';
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('car_photos', 'public');
@@ -94,14 +90,12 @@ class CreateController extends Controller
         return redirect()->route('cars.index')->with('success', 'Auto succesvol toegevoegd!');
     }
 
-    // Show the details of a specific car
     public function show($id)
     {
         $car = Car::findOrFail($id);
         return view('cars.show', compact('car'));
     }
 
-    // Show cars owned by the logged-in user
     public function mine()
     {
         $userId = Auth::id();
@@ -110,7 +104,6 @@ class CreateController extends Controller
         return view('cars.mine', compact('cars'));
     }
 
-    // Show the form for editing a car
     public function edit($id)
     {
         $car = Car::findOrFail($id);
@@ -121,7 +114,6 @@ class CreateController extends Controller
         return view('cars.edit', compact('car', 'tags'));
     }
 
-    // Update the car in the database
     public function update(Request $request, $id)
     {
         $car = Car::findOrFail($id);
@@ -139,9 +131,11 @@ class CreateController extends Controller
             'color' => 'required|string|max:255',
             'mileage' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
-            'status' => 'required|in:available,sold', // Add status validation
+            'license_plate' => 'required|string|regex:/^[A-Z0-9]{1,8}$/',
+            'status' => 'required|in:available,sold',
         ]);
 
+        $validated['license_plate'] = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $validated['license_plate']));
         $car->update($validated);
 
         if ($request->has('tags')) {
@@ -153,7 +147,6 @@ class CreateController extends Controller
         return redirect()->route('cars.index')->with('success', 'Auto succesvol bijgewerkt!');
     }
 
-    // Delete a car
     public function destroy($id)
     {
         $car = Car::findOrFail($id);
