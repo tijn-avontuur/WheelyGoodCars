@@ -13,7 +13,7 @@
             @error('license_plate')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
-            <small class="form-text text-muted">Vul het kenteken in om auto-informatie automatisch te laden (gebruik geen streepjes).</small>
+            <small class="form-text text-muted">Vul het kenteken in om auto-informatie automatisch te laden (gebruik geen streepjes). Dit kan even duren.</small>
         </div>
 
         <div class="mb-3">
