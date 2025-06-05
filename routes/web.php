@@ -19,7 +19,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Car routes
 Route::get('/cars', [CreateController::class, 'index'])->name('cars.index');
 Route::get('/cars/create', [CreateController::class, 'create'])->name('cars.create');
 Route::post('/cars', [CreateController::class, 'store'])->name('cars.store');
@@ -31,6 +30,7 @@ Route::delete('/cars/{id}', [CreateController::class, 'destroy'])->name('cars.de
 
 Route::get('/admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');
 
-Route::get('/rdw', [RDWController::class, 'search']);
+Route::get('/cars/rdw', [RDWController::class, 'showRdwData'])->name('cars.rdw');
+Route::get('/cars/rdw/search', [RDWController::class, 'search'])->name('cars.rdw.search');
 
 require __DIR__.'/auth.php';
