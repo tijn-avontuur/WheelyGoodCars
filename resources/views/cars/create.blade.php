@@ -6,6 +6,12 @@
     
     <p>Hier komt de kenteken API</p>
 
+    <div class="mb-3">
+    <label for="license_plate" class="form-label">Kenteken:</label>
+    <input type="text" class="form-control" id="license_plate" name="license_plate" placeholder="bijv. AB12CDE" required>
+    <small class="form-text text-muted">Vul het kenteken in om auto-informatie automatisch te laden.</small>
+</div>
+
     <form action="{{ route('cars.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
@@ -83,4 +89,33 @@
         <button type="submit" class="btn btn-primary">Aanbod afronden</button>
     </form>
 </div>
+
+@section('scripts')
+<script>
+document.getElementById('license_plate').addEventListener('blur', function () {
+    const licensePlate = this.value.replace(/\s+/g, '').toUpperCase();
+    if (!licensePlate) return;
+
+    fetch(`https://kentekenapi.com/${licensePlate}`) 
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('brand').value = data.data.brand || '';
+                document.getElementById('model').value = data.data.model || '';
+                document.getElementById('color').value = data.data.color || '';
+                document.getElementById('production_year').value = data.data.year || '';
+                document.getElementById('mileage').value = data.data.mileage || '';
+                document.getElementById('seats').value = data.data.seats || '';
+                document.getElementById('doors').value = data.data.doors || '';
+            } else {
+                alert('Geen gegevens gevonden voor dit kenteken.');
+            }
+        })
+        .catch(error => {
+            console.error('Fout:', error);
+            alert('Er ging iets mis bij het ophalen van de kentekengegevens.');
+        });
+});
+</script>
+@endsection 
 @endsection
