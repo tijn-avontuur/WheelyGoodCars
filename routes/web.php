@@ -31,6 +31,6 @@ Route::delete('/cars/{id}', [CreateController::class, 'destroy'])->name('cars.de
 
 Route::get('/admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');
 
-Route::get('/rdw', [RDWController::class, 'search']);
+Route::get('/cars/rdw', [CarController::class, 'showRdwData'])->name('cars.rdw');
 
 require __DIR__.'/auth.php';

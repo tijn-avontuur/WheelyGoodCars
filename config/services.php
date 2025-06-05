@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // rdw app token
+    'rdw' => [
+        'app_token' => env('RDW_APP_TOKEN'),
+    ],
+
 ];

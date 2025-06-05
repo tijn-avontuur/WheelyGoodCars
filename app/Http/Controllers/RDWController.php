@@ -22,4 +22,14 @@ class RDWController extends Controller
         // Return data as JSON response
         return response()->json($data);
     }
+
+      // licenseplate 
+    public function showRdwData(Request $request)
+    {
+        $licensePlate = $request->input('kenteken', '1-XXD-48'); 
+        $rdwService = new RdwApiService();
+        $carData = $rdwService->getCarByLicensePlate($licensePlate);
+
+        return view('cars.rdw', compact('carData', 'licensePlate'));
+    }
 }
