@@ -22,6 +22,7 @@
                     <th>Prijs</th>
                     <th>Merk</th>
                     <th>Model</th>
+                    <th>Weergaven</th>
                     <th>Tags</th>
                     <th>Acties</th>
                 </tr>
@@ -41,6 +42,7 @@
                         <td>€{{ number_format($car->price, 2) }}</td>
                         <td>{{ $car->brand }}</td>
                         <td>{{ $car->model }}</td>
+                        <td>{{ $car->views }}</td>
                         <td>
                             @forelse($car->tags as $tag)
                                 <span class="badge" style="background-color: {{ $tag->color }}">{{ $tag->name }}</span>
@@ -56,7 +58,6 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Weet je zeker dat je deze auto wilt verwijderen?')">Verwijder</button>
                             </form>
-                            
                         </td>
                     </tr>
                 @endforeach
